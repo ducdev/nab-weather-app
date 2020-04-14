@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 // COMPONENT
 import SearchInput from './components/SearchInput'
+import Result from './components/Result'
 
 const AppWrapper = styled.div`
   padding: 15px;
@@ -16,6 +17,7 @@ const AppWrapper = styled.div`
 const App = () => (
   <AppWrapper>
     <SearchInput />
+    <Result />
   </AppWrapper>
 )
 
