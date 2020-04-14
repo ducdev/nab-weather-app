@@ -1,3 +1,15 @@
+# NAB Weather App
+
+An application for checking the weather forecast info of a city.
+
+Here is an example of usage:
+
+![Example of usage](http://recordit.co/qB1noaaO5w.gif)
+
+Hope you enjoy using the app!
+
+## More information
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
