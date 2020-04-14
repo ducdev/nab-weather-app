@@ -1,9 +1,9 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled from 'styled-components'
 
 // COMPONENT
 import SearchInput from './components/SearchInput'
-import Result from './components/Result'
+import WeatherForecast from './components/WeatherForecast'
 
 const AppWrapper = styled.div`
   padding: 15px;
@@ -14,11 +14,14 @@ const AppWrapper = styled.div`
   }
 `
 
-const App = () => (
-  <AppWrapper>
-    <SearchInput />
-    <Result />
-  </AppWrapper>
-)
+const App = () => {
+  const [weatherData, setWeatherData] = useState(null)
+  return (
+    <AppWrapper>
+      <SearchInput setWeatherData={setWeatherData} />
+      <WeatherForecast weatherData={weatherData} />
+    </AppWrapper>
+  )
+}
 
 export default App
