@@ -22,6 +22,8 @@ const Day = styled.div`
   }
 `
 
+const tempFormat = (num) => `${Math.round((num + Number.EPSILON) * 100) / 100} °C`
+
 const WeatherForecast = ({ weatherData }) => {
   const daysData = get(weatherData, 'consolidated_weather', [])
 
@@ -35,8 +37,8 @@ const WeatherForecast = ({ weatherData }) => {
       daysData.map(day => (
         <Day key={day.applicable_date}>
           <span>{day.applicable_date}</span>
-          <span>Min: {day.min_temp}</span>
-          <span>Max: {day.max_temp}</span>
+          <span>Min: {tempFormat(day.min_temp, 2)}</span>
+          <span>Max: {tempFormat(day.max_temp)}</span>
         </Day>
       ))
     }

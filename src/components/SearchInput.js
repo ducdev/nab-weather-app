@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
-// import debounce from 'lodash/debounce'
 import axios from 'axios'
 import {DebounceInput} from 'react-debounce-input';
 
@@ -38,7 +37,7 @@ const SearchInput = ({ setWeatherData }) => {
   )
 
   const fetchWeatherDataHandler = useCallback((woeid) => {
-    axios.get(`${CORS_ANYWHERE}https://www.metaweather.com/api/location/44418/`)  
+    axios.get(`${CORS_ANYWHERE}https://www.metaweather.com/api/location/${woeid}/`)  
       .then((res) => setWeatherData(res.data))
       .catch((err) => console.error(err))
   }, [setWeatherData])
