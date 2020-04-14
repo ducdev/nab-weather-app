@@ -20,7 +20,7 @@ const SearchResultWrapper = styled.ul`
   }
 `
 
-const SearchResult = ({ cities, setCities, fetchWeatherDataHandler }) => {
+const SearchResult = ({ cities, setCities, fetchWeatherDataHandler, isNoCitiesFound, setIsNoCitiesFound }) => {
   
   const onResultItemClickHandler = useCallback((woeid) => {
     setCities([])
@@ -30,11 +30,14 @@ const SearchResult = ({ cities, setCities, fetchWeatherDataHandler }) => {
   return (
     <SearchResultWrapper>
       {
-        cities.map(el => (
-          <li key={el.woeid} onClick={() => onResultItemClickHandler(el.woeid)}>
-            {el.title} ({el.location_type})
-          </li>
-        ))
+        isNoCitiesFound ?
+          <li onClick={() => setIsNoCitiesFound(false)}>No cities were found</li>
+        :
+          cities.map(el => (
+            <li key={el.woeid} onClick={() => onResultItemClickHandler(el.woeid)}>
+              {el.title} ({el.location_type})
+            </li>
+          ))
       }
     </SearchResultWrapper>
   )

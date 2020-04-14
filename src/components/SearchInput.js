@@ -1,14 +1,15 @@
 import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
 import {DebounceInput} from 'react-debounce-input';
 
 // COMPONENT
 import SearchResult from './SearchResult'
 
-const CORS_ANYWHERE = `https://cors-anywhere.herokuapp.com/`
+// CONSTANT
+import { CORS_ANYWHERE, METAWEATHER } from '../constants'
 
 const SearchInputWrapper = styled.div`
   border: 1px solid #cecece;
@@ -26,37 +27,66 @@ const SearchInputWrapper = styled.div`
   }
 `
 
-const SearchInput = ({ setWeatherData }) => {
+const SearchInput = ({ setWeatherData, setIsWeatherDataLoading }) => {
   const [cities, setCities] = useState([])
+  const [loadingCities, setLoadingCities] = useState(false)
+  const [isNoCitiesFound, setIsNoCitiesFound] = useState(false)
 
   const citiesSearchHandler = useCallback((e) => {
-    axios.get(`${CORS_ANYWHERE}https://www.metaweather.com/api/location/search/?query=${e.target.value}`)  
-      .then((res) => setCities(res.data))
-      .catch((err) => console.error(err))
-    }, []
+    setLoadingCities(true)
+    if (isNoCitiesFound) {
+      setIsNoCitiesFound(false)
+    }
+    axios.get(`${CORS_ANYWHERE}${METAWEATHER}api/location/search/?query=${e.target.value}`)  
+      .then((res) => {
+        setLoadingCities(false)
+        setCities(res.data)
+        if (res.data.length === 0) {
+          setIsNoCitiesFound(true)
+        }
+      })
+      .catch((err) => {
+        setLoadingCities(false)
+        console.error(err)
+      })
+    }, [isNoCitiesFound]
   )
 
   const fetchWeatherDataHandler = useCallback((woeid) => {
-    axios.get(`${CORS_ANYWHERE}https://www.metaweather.com/api/location/${woeid}/`)  
-      .then((res) => setWeatherData(res.data))
-      .catch((err) => console.error(err))
-  }, [setWeatherData])
+    setIsWeatherDataLoading(true)
+    axios.get(`${CORS_ANYWHERE}${METAWEATHER}api/location/${woeid}/`)  
+      .then((res) => {
+        setWeatherData(res.data)
+        setIsWeatherDataLoading(false)
+      })
+      .catch((err) => {
+        console.error(err)
+        setIsWeatherDataLoading(false)
+      })
+  }, [setIsWeatherDataLoading, setWeatherData])
 
   return (
   <SearchInputWrapper>
-    <FontAwesomeIcon icon={faSearch} />
+    {
+      loadingCities ?
+        <FontAwesomeIcon icon={faSpinner} spin />
+      :
+        <FontAwesomeIcon icon={faSearch} />
+    }
     <DebounceInput
       placeholder="Search"
       debounceTimeout={500}
       onChange={citiesSearchHandler}
     />
     {
-      cities.length > 0 &&
+      (cities.length > 0 || isNoCitiesFound) &&
       (
         <SearchResult
           cities={cities}
           setCities={setCities}
+          isNoCitiesFound={isNoCitiesFound}
           fetchWeatherDataHandler={fetchWeatherDataHandler}
+          setIsNoCitiesFound={setIsNoCitiesFound}
         />
       )
     }
