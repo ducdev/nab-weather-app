@@ -33,6 +33,10 @@ const SearchInput = ({ setWeatherData, setIsWeatherDataLoading, setError }) => {
   const [isNoCitiesFound, setIsNoCitiesFound] = useState(false)
 
   const citiesSearchHandler = useCallback((e) => {
+    if (e.target.value.length <= 3) {
+      return
+    }
+
     setLoadingCities(true)
 
     if (isNoCitiesFound) {
