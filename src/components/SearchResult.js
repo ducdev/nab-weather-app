@@ -21,7 +21,6 @@ const SearchResultWrapper = styled.ul`
 `
 
 const SearchResult = ({ cities, setCities, fetchWeatherDataHandler, isNoCitiesFound, setIsNoCitiesFound }) => {
-  
   const onResultItemClickHandler = useCallback((woeid) => {
     setCities([])
     fetchWeatherDataHandler(woeid)

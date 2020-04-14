@@ -4,6 +4,7 @@ import styled from 'styled-components'
 // COMPONENT
 import SearchInput from './components/SearchInput'
 import WeatherForecast from './components/WeatherForecast'
+import Error from './components/Error'
 
 const AppWrapper = styled.div`
   font-family: 'Roboto', sans-serif;
@@ -18,13 +19,20 @@ const AppWrapper = styled.div`
 const App = () => {
   const [weatherData, setWeatherData] = useState(null)
   const [isWeatherDataLoading, setIsWeatherDataLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   return (
     <AppWrapper>
+      <h1>NAB Weather App</h1>
       <SearchInput
         setWeatherData={setWeatherData}
         setIsWeatherDataLoading={setIsWeatherDataLoading}
+        setError={setError}
       />
+      {
+        error &&
+        <Error>{error}</Error>
+      }
       {
         weatherData && weatherData.title &&
         <h3>{weatherData.title}</h3>

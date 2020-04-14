@@ -27,18 +27,21 @@ const SearchInputWrapper = styled.div`
   }
 `
 
-const SearchInput = ({ setWeatherData, setIsWeatherDataLoading }) => {
+const SearchInput = ({ setWeatherData, setIsWeatherDataLoading, setError }) => {
   const [cities, setCities] = useState([])
   const [loadingCities, setLoadingCities] = useState(false)
   const [isNoCitiesFound, setIsNoCitiesFound] = useState(false)
 
   const citiesSearchHandler = useCallback((e) => {
     setLoadingCities(true)
+
     if (isNoCitiesFound) {
       setIsNoCitiesFound(false)
     }
+
     axios.get(`${CORS_ANYWHERE}${METAWEATHER}api/location/search/?query=${e.target.value}`)  
       .then((res) => {
+        setError(null)
         setLoadingCities(false)
         setCities(res.data)
         if (res.data.length === 0) {
@@ -47,51 +50,54 @@ const SearchInput = ({ setWeatherData, setIsWeatherDataLoading }) => {
       })
       .catch((err) => {
         setLoadingCities(false)
+        setError('Get cities error!')
         console.error(err)
       })
-    }, [isNoCitiesFound]
+    }, [isNoCitiesFound, setError]
   )
 
   const fetchWeatherDataHandler = useCallback((woeid) => {
     setIsWeatherDataLoading(true)
     axios.get(`${CORS_ANYWHERE}${METAWEATHER}api/location/${woeid}/`)  
       .then((res) => {
+        setError(null)
         setWeatherData(res.data)
         setIsWeatherDataLoading(false)
       })
       .catch((err) => {
         console.error(err)
+        setError('Get weather forecast data error!')
         setIsWeatherDataLoading(false)
       })
-  }, [setIsWeatherDataLoading, setWeatherData])
+  }, [setError, setIsWeatherDataLoading, setWeatherData])
 
   return (
-  <SearchInputWrapper>
-    {
-      loadingCities ?
-        <FontAwesomeIcon icon={faSpinner} spin />
-      :
-        <FontAwesomeIcon icon={faSearch} />
-    }
-    <DebounceInput
-      placeholder="Search"
-      debounceTimeout={500}
-      onChange={citiesSearchHandler}
-    />
-    {
-      (cities.length > 0 || isNoCitiesFound) &&
-      (
-        <SearchResult
-          cities={cities}
-          setCities={setCities}
-          isNoCitiesFound={isNoCitiesFound}
-          fetchWeatherDataHandler={fetchWeatherDataHandler}
-          setIsNoCitiesFound={setIsNoCitiesFound}
-        />
-      )
-    }
-  </SearchInputWrapper>
-)
+    <SearchInputWrapper>
+      {
+        loadingCities ?
+          <FontAwesomeIcon icon={faSpinner} spin />
+        :
+          <FontAwesomeIcon icon={faSearch} />
+      }
+      <DebounceInput
+        placeholder="Search"
+        debounceTimeout={500}
+        onChange={citiesSearchHandler}
+      />
+      {
+        (cities.length > 0 || isNoCitiesFound) &&
+        (
+          <SearchResult
+            cities={cities}
+            setCities={setCities}
+            isNoCitiesFound={isNoCitiesFound}
+            fetchWeatherDataHandler={fetchWeatherDataHandler}
+            setIsNoCitiesFound={setIsNoCitiesFound}
+          />
+        )
+      }
+    </SearchInputWrapper>
+  )
 }
 
 export default SearchInput
